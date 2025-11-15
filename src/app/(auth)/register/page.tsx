@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -30,10 +31,13 @@ export default function RegisterPage() {
 
     if (!response.ok) {
       const payload = await response.json();
-      setError(payload.message ?? "Unable to register");
+      const message = payload.message ?? "Unable to register";
+      setError(message);
+      toast.error(message);
       return;
     }
 
+    toast.success("Account created. You can sign in now.");
     router.push("/login");
   };
 
