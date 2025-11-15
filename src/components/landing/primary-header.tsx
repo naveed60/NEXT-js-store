@@ -6,6 +6,8 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/providers/cart-provider";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type HeaderProps = {
   searchTerm: string;
@@ -25,6 +27,23 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { items, toggleCart } = useCart();
   const { status, data: session } = useSession();
+  const [signingOut, setSigningOut] = useState(false);
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      setSigningOut(true);
+      await signOut({ redirect: false });
+      toast.success("Signed out");
+      router.push("/login");
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast.error("Unable to sign out");
+    } finally {
+      setSigningOut(false);
+    }
+  };
 
   return (
     <>
@@ -76,10 +95,11 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
             {status === "authenticated" ? (
               <button
                 type="button"
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 className="hidden rounded-full border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:border-zinc-400 sm:block"
+                disabled={signingOut}
               >
-                Sign out
+                {signingOut ? "Signing out..." : "Sign out"}
               </button>
             ) : (
               <button
@@ -90,12 +110,6 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
                 Sign in
               </button>
             )}
-            <Link
-              href="/nextshop/admin"
-              className="hidden rounded-full bg-[oklch(0.58_0.15_256.18)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[oklch(0.63_0.15_256.18)] sm:block"
-            >
-              Admin
-            </Link>
           </div>
         </div>
         <div className="mt-3 px-4 sm:hidden">

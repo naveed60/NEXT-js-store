@@ -152,13 +152,15 @@ async function getDashboardData(): Promise<DashboardData> {
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);
+  const adminPath = "/nextshop/admin";
+  const loginPath = `/login?redirect=${encodeURIComponent(adminPath)}`;
 
   if (!session) {
-    redirect("/login");
+    redirect(loginPath);
   }
 
   if (session.user.role !== "ADMIN") {
-    redirect("/nextshop");
+    redirect(loginPath);
   }
 
   const data = await getDashboardData();

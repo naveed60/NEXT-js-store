@@ -1,21 +1,24 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signIn, signOut, useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") ?? "/nextshop/admin";
+  const { status, data: session } = useSession();
   const [formState, setFormState] = useState({ email: "", password: "" });
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    setError(null);
 
     const result = await signIn("credentials", {
       email: formState.email,
@@ -26,11 +29,27 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Incorrect email or password");
+      toast.error("Incorrect email or password");
       return;
     }
 
-    router.push("/nextshop/admin");
+    toast.success("Welcome back!");
+    router.push(redirectTo);
+    router.refresh();
+  };
+
+  const handleSignOut = async () => {
+    try {
+      setSigningOut(true);
+      await signOut({ redirect: false });
+      toast.success("Signed out");
+      router.refresh();
+    } catch (error) {
+      console.error(error);
+      toast.error("Unable to sign out right now");
+    } finally {
+      setSigningOut(false);
+    }
   };
 
   return (
@@ -45,6 +64,36 @@ export default function LoginPage() {
             Sign in to NextShop
           </h1>
         </div>
+        {status === "authenticated" && (
+          <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-600">
+            <p className="font-semibold text-zinc-800">Already signed in</p>
+            <p>
+              {session?.user?.email} is signed in. Continue with this account or
+              sign out to switch.
+            </p>
+            <div className="mt-3 flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  router.push(redirectTo);
+                  router.refresh();
+                }}
+              >
+                Continue
+              </Button>
+              <Button
+                variant="ghost"
+                className="flex-1 border border-zinc-200 text-zinc-700 hover:border-zinc-400"
+                type="button"
+                onClick={handleSignOut}
+                disabled={signingOut}
+              >
+                {signingOut ? "Signing out..." : "Switch account"}
+              </Button>
+            </div>
+          </div>
+        )}
         <label className="space-y-1 text-sm font-medium text-zinc-600">
           Email
           <input
@@ -72,9 +121,6 @@ export default function LoginPage() {
             className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-base text-zinc-900 outline-none transition focus:border-zinc-500"
           />
         </label>
-        {error && (
-          <p className="text-sm font-semibold text-red-500">{error}</p>
-        )}
         <Button type="submit" className="w-full" disabled={loading}>
           {loading ? "Signing in..." : "Sign in"}
         </Button>
