@@ -4,9 +4,7 @@ import { useState, type ReactNode } from "react";
 import { PrimaryHeader } from "./primary-header";
 import { HeroSlider } from "./hero-slider";
 import { ProductGrid } from "./product-grid";
-import { Button } from "@/components/ui/button";
 import { Sparkles, ShieldCheck, Truck } from "lucide-react";
-import Link from "next/link";
 
 export function LandingScreen() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,14 +46,10 @@ export function LandingScreen() {
                 collaboration-ready admin dashboards.
               </p>
             </div>
-            <Link href="/nextshop/admin" className="inline-flex">
-              <Button
-                variant="ghost"
-                className="border border-zinc-200 text-zinc-800 hover:border-zinc-400"
-              >
-                Go to admin
-              </Button>
-            </Link>
+            <p className="text-sm text-zinc-500">
+              Administrators can access the dashboard directly via the secure
+              route.
+            </p>
           </div>
         </section>
       </div>
