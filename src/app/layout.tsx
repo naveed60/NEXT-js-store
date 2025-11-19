@@ -18,6 +18,20 @@ export const metadata: Metadata = {
   title: "NextShop — Modern commerce kit",
   description:
     "A clean Next.js commerce starter with PostgreSQL, authentication, and a responsive admin dashboard.",
+  openGraph: {
+    title: "NextShop — Modern commerce kit",
+    description:
+      "A clean Next.js commerce starter with PostgreSQL, authentication, and a responsive admin dashboard.",
+    type: "website",
+    locale: "en_US",
+    siteName: "NextShop",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NextShop — Modern commerce kit",
+    description:
+      "A clean Next.js commerce starter with PostgreSQL, authentication, and a responsive admin dashboard.",
+  },
 };
 
 export default function RootLayout({

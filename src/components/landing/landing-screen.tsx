@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import { PrimaryHeader } from "./primary-header";
 import { HeroSlider } from "./hero-slider";
 import { ProductGrid } from "./product-grid";
+import { Footer } from "./footer";
 import { Sparkles, ShieldCheck, Truck } from "lucide-react";
 
 export function LandingScreen() {
@@ -52,6 +53,7 @@ export function LandingScreen() {
             </p>
           </div>
         </section>
+        <Footer />
       </div>
     </div>
   );

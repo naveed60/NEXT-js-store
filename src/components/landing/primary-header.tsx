@@ -53,6 +53,7 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
             type="button"
             className="rounded-2xl border border-zinc-200 p-2 text-zinc-600 transition hover:border-zinc-400"
             onClick={() => setSidebarOpen(true)}
+            aria-label="Open menu"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -84,6 +85,7 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
               type="button"
               onClick={toggleCart}
               className="relative rounded-full border border-zinc-200 p-2 text-zinc-600 transition hover:border-zinc-400"
+              aria-label="Open cart"
             >
               <ShoppingBag className="h-5 w-5" />
               {items.length > 0 && (
@@ -144,6 +146,7 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
             type="button"
             onClick={() => setSidebarOpen(false)}
             className="rounded-full border border-transparent p-2 text-zinc-500 hover:border-zinc-200"
+            aria-label="Close menu"
           >
             <X className="h-5 w-5" />
           </button>
