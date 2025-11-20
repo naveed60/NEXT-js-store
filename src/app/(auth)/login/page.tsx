@@ -10,7 +10,7 @@ import { toast } from "sonner";
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get("redirect") ?? "/nextshop/admin";
+  const redirectTo = searchParams.get("redirect") ?? "/nextshop";
   const { status, data: session } = useSession();
   const [formState, setFormState] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);

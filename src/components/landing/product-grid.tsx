@@ -2,7 +2,10 @@
 
 import { featuredProducts } from "@/data/products";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 import { useCart } from "@/components/providers/cart-provider";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Star } from "lucide-react";
 
@@ -12,6 +15,8 @@ type ProductGridProps = {
 
 export function ProductGrid({ searchTerm }: ProductGridProps) {
   const { addItem } = useCart();
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const normalized = searchTerm.trim().toLowerCase();
 
   const visibleProducts = featuredProducts.filter((product) => {
@@ -58,9 +63,9 @@ export function ProductGrid({ searchTerm }: ProductGridProps) {
                 </span>
               )}
             </div>
-              <div className="flex flex-1 flex-col gap-3 px-1 pt-4">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
+            <div className="flex flex-1 flex-col gap-3 px-1 pt-4">
+              <div className="flex items-start justify-between gap-4">
+                <div>
                   <h3 className="text-lg font-semibold text-zinc-900">
                     {product.name}
                   </h3>
@@ -68,37 +73,45 @@ export function ProductGrid({ searchTerm }: ProductGridProps) {
                     {product.description}
                   </p>
                 </div>
-                  <div className="flex items-center gap-1 text-sm font-semibold">
-                    <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-                    {product.rating.toFixed(1)}
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2 text-xs text-zinc-400">
-                  {product.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-zinc-200 px-3 py-1"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-auto flex items-center justify-between">
-                  <p className="text-2xl font-semibold text-zinc-900">
-                    ${product.price}
-                  </p>
-                  <Button
-                    variant="ghost"
-                    className="border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700 hover:border-zinc-400"
-                    onClick={() => addItem(product)}
-                  >
-                    Add to cart
-                  </Button>
+                <div className="flex items-center gap-1 text-sm font-semibold">
+                  <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+                  {product.rating.toFixed(1)}
                 </div>
               </div>
-            </article>
-          ))}
-          {visibleProducts.length === 0 && (
+              <div className="flex flex-wrap gap-2 text-xs text-zinc-400">
+                {product.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full border border-zinc-200 px-3 py-1"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-auto flex items-center justify-between">
+                <p className="text-2xl font-semibold text-zinc-900">
+                  ${product.price}
+                </p>
+                <Button
+                  variant="ghost"
+                  className="border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700 hover:border-zinc-400"
+                  onClick={() => {
+                    if (status === "authenticated") {
+                      addItem(product);
+                      toast.success(`${product.name} added to cart`);
+                    } else {
+                      toast.error("Please sign in to add items to the cart");
+                      router.push("/login?redirect=/nextshop");
+                    }
+                  }}
+                >
+                  Add to cart
+                </Button>
+              </div>
+            </div>
+          </article>
+        ))}
+        {visibleProducts.length === 0 && (
           <div className="rounded-[30px] border border-dashed border-zinc-200 p-10 text-center text-zinc-500 sm:col-span-2 lg:col-span-3">
             Nothing matches “{searchTerm}”. Try a different keyword.
           </div>
