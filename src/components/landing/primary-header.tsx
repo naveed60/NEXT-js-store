@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Menu, Search, ShoppingBag, X, User } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/providers/cart-provider";
@@ -25,6 +25,7 @@ const sidebarCategories = [
 
 export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const { items, toggleCart } = useCart();
   const { status, data: session } = useSession();
   const [signingOut, setSigningOut] = useState(false);
@@ -95,14 +96,43 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
               )}
             </button>
             {status === "authenticated" ? (
-              <button
-                type="button"
-                onClick={handleSignOut}
-                className="hidden rounded-full border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:border-zinc-400 sm:block"
-                disabled={signingOut}
-              >
-                {signingOut ? "Signing out..." : "Sign out"}
-              </button>
+              <div className="relative hidden sm:block">
+                <button
+                  type="button"
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="rounded-full border border-zinc-200 p-2 text-zinc-600 transition hover:border-zinc-400"
+                  aria-label="User profile"
+                >
+                  <User className="h-5 w-5" />
+                </button>
+
+                {profileOpen && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setProfileOpen(false)}
+                    />
+                    <div className="absolute right-0 top-full mt-2 z-50 w-64 rounded-2xl border border-zinc-100 bg-white p-4 shadow-xl">
+                      <div className="mb-4">
+                        <p className="text-sm font-medium text-zinc-900">
+                          {session?.user?.name}
+                        </p>
+                        <p className="text-xs text-zinc-500 truncate">
+                          {session?.user?.email}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleSignOut}
+                        className="w-full rounded-xl border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-50"
+                        disabled={signingOut}
+                      >
+                        {signingOut ? "Signing out..." : "Sign out"}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             ) : (
               <button
                 type="button"
