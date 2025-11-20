@@ -14,13 +14,17 @@ type HeaderProps = {
   onSearchChange: (value: string) => void;
 };
 
-const navLinks = ["Collections", "Essentials", "Stories"];
+const navLinks = [
+  { label: "Collections", href: "/nextshop/collections" },
+  { label: "Essentials", href: "/nextshop/essentials" },
+  { label: "Stories", href: "/nextshop/stories" },
+];
 const sidebarCategories = [
-  "New in studio",
-  "Outdoor edits",
-  "Daily carry",
-  "Wellness",
-  "Workspace",
+  { label: "New in studio", href: "/nextshop/categories/new-in-studio" },
+  { label: "Outdoor edits", href: "/nextshop/categories/outdoor-edits" },
+  { label: "Daily carry", href: "/nextshop/categories/daily-carry" },
+  { label: "Wellness", href: "/nextshop/categories/wellness" },
+  { label: "Workspace", href: "/nextshop/categories/workspace" },
 ];
 
 export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
@@ -36,7 +40,7 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
       setSigningOut(true);
       await signOut({ redirect: false });
       toast.success("Signed out");
-      router.push("/login");
+      router.push("/nextshop");
       router.refresh();
     } catch (error) {
       console.error(error);
@@ -63,13 +67,13 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
           </Link>
           <nav className="hidden flex-1 items-center justify-center gap-6 text-sm text-zinc-400 sm:flex">
             {navLinks.map((link) => (
-              <button
-                type="button"
-                key={link}
+              <Link
+                key={link.href}
+                href={link.href}
                 className="transition hover:text-zinc-700"
               >
-                {link}
-              </button>
+                {link.label}
+              </Link>
             ))}
           </nav>
           <div className="relative hidden flex-1 items-center rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm shadow-inner sm:flex">
@@ -183,13 +187,14 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
         </div>
         <div className="mt-6 space-y-4 text-sm text-zinc-500">
           {sidebarCategories.map((category) => (
-            <button
-              key={category}
-              type="button"
-              className="w-full rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-zinc-200 hover:text-zinc-800"
+            <Link
+              key={category.href}
+              href={category.href}
+              className="block w-full rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-zinc-200 hover:text-zinc-800"
+              onClick={() => setSidebarOpen(false)}
             >
-              {category}
-            </button>
+              {category.label}
+            </Link>
           ))}
         </div>
         {status === "authenticated" && (
