@@ -1,7 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, Search, ShoppingBag, X, User } from "lucide-react";
+import {
+  type LucideIcon,
+  Backpack,
+  HeartPulse,
+  Laptop,
+  Map,
+  Menu,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  User,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/providers/cart-provider";
@@ -19,13 +31,45 @@ const navLinks = [
   { label: "Essentials", href: "/nextshop/essentials" },
   { label: "Stories", href: "/nextshop/stories" },
 ];
-const sidebarCategories = [
-  { label: "New in studio", href: "/nextshop/categories/new-in-studio" },
-  { label: "Outdoor edits", href: "/nextshop/categories/outdoor-edits" },
-  { label: "Daily carry", href: "/nextshop/categories/daily-carry" },
-  { label: "Wellness", href: "/nextshop/categories/wellness" },
-  { label: "Workspace", href: "/nextshop/categories/workspace" },
+type SidebarCategory = {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+};
+
+const sidebarCategories: SidebarCategory[] = [
+  {
+    label: "New in studio",
+    href: "/nextshop/categories/new-in-studio",
+    icon: Sparkles,
+  },
+  {
+    label: "Outdoor edits",
+    href: "/nextshop/categories/outdoor-edits",
+    icon: Map,
+  },
+  {
+    label: "Daily carry",
+    href: "/nextshop/categories/daily-carry",
+    icon: Backpack,
+  },
+  {
+    label: "Wellness",
+    href: "/nextshop/categories/wellness",
+    icon: HeartPulse,
+  },
+  {
+    label: "Workspace",
+    href: "/nextshop/categories/workspace",
+    icon: Laptop,
+  },
 ];
+
+const LogoMark = () => (
+  <span className="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600 via-fuchsia-500 to-orange-500 text-white shadow-xl">
+    <span className="text-lg font-bold tracking-tight">NS</span>
+  </span>
+);
 
 export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -62,8 +106,15 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
           >
             <Menu className="h-5 w-5" />
           </button>
-          <Link href="/nextshop" className="font-semibold tracking-tight text-zinc-900">
-            next<span className="text-[oklch(0.58_0.15_256.18)]">shop</span>
+          <Link
+            href="/nextshop"
+            className="flex items-center gap-3"
+            aria-label="Go to NextShop home"
+          >
+            <LogoMark />
+            <span className="hidden text-sm font-semibold uppercase tracking-[0.4em] text-zinc-500 sm:inline">
+              NextShop
+            </span>
           </Link>
           <nav className="hidden flex-1 items-center justify-center gap-6 text-sm text-zinc-400 sm:flex">
             {navLinks.map((link) => (
@@ -186,16 +237,19 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
           </button>
         </div>
         <div className="mt-6 space-y-4 text-sm text-zinc-500">
-          {sidebarCategories.map((category) => (
-            <Link
-              key={category.href}
-              href={category.href}
-              className="block w-full rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-zinc-200 hover:text-zinc-800"
-              onClick={() => setSidebarOpen(false)}
-            >
-              {category.label}
-            </Link>
-          ))}
+            {sidebarCategories.map((category) => (
+              <Link
+                key={category.href}
+                href={category.href}
+                className="group flex items-center gap-3 rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-zinc-200 hover:text-zinc-800"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-500 transition group-hover:bg-zinc-900 group-hover:text-white">
+                  <category.icon className="h-4 w-4" />
+                </span>
+                <span>{category.label}</span>
+              </Link>
+            ))}
         </div>
         {status === "authenticated" && (
           <div className="mt-8 rounded-2xl border border-zinc-100 p-4 text-sm text-zinc-500">
