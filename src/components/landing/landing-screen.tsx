@@ -6,8 +6,13 @@ import { HeroSlider } from "./hero-slider";
 import { ProductGrid } from "./product-grid";
 import { Footer } from "./footer";
 import { Sparkles, ShieldCheck, Truck } from "lucide-react";
+import { type StorefrontProduct } from "@/types/product";
 
-export function LandingScreen() {
+type LandingScreenProps = {
+  products: StorefrontProduct[];
+};
+
+export function LandingScreen({ products }: LandingScreenProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
@@ -32,7 +37,7 @@ export function LandingScreen() {
             text="Global shipping in 48h with adaptive tracking updates."
           />
         </section>
-        <ProductGrid searchTerm={searchTerm} />
+        <ProductGrid products={products} searchTerm={searchTerm} />
         <section className="mt-16 rounded-[36px] border border-zinc-100 bg-white p-10 text-zinc-900 shadow-2xl">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
