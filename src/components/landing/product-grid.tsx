@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { featuredProducts } from "@/data/products";
+import { type StorefrontProduct } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
@@ -9,17 +9,38 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Star } from "lucide-react";
 
-type ProductGridProps = {
-  searchTerm: string;
+const allowedImageHosts = new Set([
+  "images.unsplash.com",
+  "www.bopuqilamur.org.uk",
+  "img.freepik.com",
+]);
+
+const getValidImageUrl = (src: string) => {
+  if (!src) return null;
+  if (src.startsWith("/")) {
+    return src;
+  }
+
+  try {
+    const url = new URL(src);
+    return allowedImageHosts.has(url.hostname) ? src : null;
+  } catch (error) {
+    return null;
+  }
 };
 
-export function ProductGrid({ searchTerm }: ProductGridProps) {
+type ProductGridProps = {
+  searchTerm: string;
+  products: StorefrontProduct[];
+};
+
+export function ProductGrid({ searchTerm, products }: ProductGridProps) {
   const { addItem } = useCart();
   const { data: session, status } = useSession();
   const router = useRouter();
   const normalized = searchTerm.trim().toLowerCase();
 
-  const visibleProducts = featuredProducts.filter((product) => {
+  const visibleProducts = products.filter((product) => {
     if (!normalized) return true;
     return (
       product.name.toLowerCase().includes(normalized) ||
@@ -50,16 +71,22 @@ export function ProductGrid({ searchTerm }: ProductGridProps) {
             className="group flex flex-col rounded-[30px] border border-zinc-100 bg-white p-4 shadow-xl transition hover:-translate-y-1 hover:border-zinc-200"
           >
             <div className="relative aspect-[4/3] overflow-hidden rounded-[24px] bg-zinc-100">
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="object-cover transition duration-500 group-hover:scale-105"
-              />
-              {product.badge && (
+              {getValidImageUrl(product.image) ? (
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                  className="object-cover transition duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-xs font-semibold uppercase tracking-[0.2em] text-zinc-400">
+                  Image unavailable
+                </div>
+              )}
+              {product.featured && (
                 <span className="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-emerald-500 shadow">
-                  {product.badge}
+                  Featured
                 </span>
               )}
             </div>
@@ -90,7 +117,7 @@ export function ProductGrid({ searchTerm }: ProductGridProps) {
               </div>
               <div className="mt-auto flex items-center justify-between">
                 <p className="text-2xl font-semibold text-zinc-900">
-                  ${product.price}
+                  ${product.price.toFixed(2)}
                 </p>
                 <Button
                   variant="ghost"
