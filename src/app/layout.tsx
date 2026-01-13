@@ -43,6 +43,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} bg-white text-zinc-900 antialiased dark:bg-black dark:text-white`}
+        suppressHydrationWarning
       >
         <AppProviders>{children}</AppProviders>
         <Toaster position="top-center" richColors />
