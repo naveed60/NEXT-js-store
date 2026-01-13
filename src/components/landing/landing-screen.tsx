@@ -19,7 +19,9 @@ export function LandingScreen({ products }: LandingScreenProps) {
     <div className="min-h-screen bg-gradient-to-b from-zinc-50 via-white to-zinc-100 pb-20">
       <div className="mx-auto max-w-6xl px-4 pb-16">
         <PrimaryHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-        <HeroSlider />
+        <div className="mt-6">
+          <HeroSlider />
+        </div>
         <section className="mt-12 grid gap-4 sm:grid-cols-3">
           <FeatureCard
             icon={<Sparkles className="h-5 w-5" />}
