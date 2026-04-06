@@ -24,6 +24,7 @@ export type DashboardData = {
     priceLabel: string;
     priceValue: number;
     featured: boolean;
+    category: string;
     description: string;
     image: string;
     tags: string[];
@@ -109,6 +110,8 @@ export async function getDashboardData(): Promise<DashboardData> {
         priceLabel: `$${product.price.toNumber().toFixed(2)}`,
         priceValue: product.price.toNumber(),
         featured: product.featured,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        category: (product as any).category ?? "",
         description: product.description,
         image: product.image,
         tags: product.tags,
@@ -183,6 +186,7 @@ export async function getDashboardData(): Promise<DashboardData> {
           priceLabel: "$349.00",
           priceValue: 349,
           featured: true,
+          category: "",
           description:
             "Spatial audio, adaptive noise cancelling, and a sculpted aluminum frame.",
           image:
@@ -197,6 +201,7 @@ export async function getDashboardData(): Promise<DashboardData> {
           priceLabel: "$499.00",
           priceValue: 499,
           featured: true,
+          category: "",
           description:
             "Sapphire glass, multi-day battery, and proactive wellness tracking.",
           image:

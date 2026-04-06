@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { getServerSession } from "next-auth";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { getServerSession } = require("next-auth") as any;
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -10,8 +11,9 @@ const productUpdateSchema = z
   .object({
     name: z.string().min(1).optional(),
     description: z.string().min(1).optional(),
-    image: z.string().url().optional(),
+    image: z.string().min(1).optional(),
     price: z.coerce.number().positive().optional(),
+    category: z.string().min(1).optional(),
     tags: z.array(z.string()).optional(),
     inventory: z.coerce.number().int().min(0).optional(),
     featured: z.boolean().optional(),
@@ -42,7 +44,8 @@ export async function PATCH(
     const body = await request.json();
     const productData = productUpdateSchema.parse(body);
 
-    const updateData: Prisma.ProductUpdateInput = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateData: any = {};
 
     if (typeof productData.name === "string") {
       updateData.name = productData.name;
@@ -58,6 +61,10 @@ export async function PATCH(
 
     if (typeof productData.price === "number") {
       updateData.price = new Prisma.Decimal(productData.price);
+    }
+
+    if (typeof productData.category === "string") {
+      updateData.category = productData.category;
     }
 
     if (typeof productData.tags !== "undefined") {
@@ -88,8 +95,8 @@ export async function PATCH(
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         {
-          message: error.errors
-            .map((err) => `${err.path.join(".")}: ${err.message}`)
+          message: error.issues
+            .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
             .join(", "),
         },
         { status: 400 },

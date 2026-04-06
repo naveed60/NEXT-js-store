@@ -37,6 +37,7 @@ model Product {
   tags        String[]
   rating      Float       @default(4.5)
   inventory   Int         @default(25)
+  category    String      @default("")
   featured    Boolean     @default(false)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt

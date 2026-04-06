@@ -2,7 +2,8 @@ import { Buffer } from "buffer";
 import { promises as fs } from "fs";
 import path from "path";
 
-import { getServerSession } from "next-auth";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { getServerSession } = require("next-auth") as any;
 import { NextResponse } from "next/server";
 
 import { authOptions } from "@/lib/auth";

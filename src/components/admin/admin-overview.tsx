@@ -13,11 +13,27 @@ import { toast } from "sonner";
 
 import type { DashboardData } from "@/lib/admin-dashboard-data";
 
+const PRODUCT_CATEGORIES = [
+  { label: "Men — Un-Stitch", value: "men-un-stitch" },
+  { label: "Men — Stitch", value: "men-stitch" },
+  { label: "Men — Watches", value: "men-watches" },
+  { label: "Men — Perfumes", value: "men-perfumes" },
+  { label: "Men — Cufflinks", value: "men-cufflinks" },
+  { label: "Women — Un-Stitch", value: "women-un-stitch" },
+  { label: "Women — Stitch", value: "women-stitch" },
+  { label: "Women — Watches", value: "women-watches" },
+  { label: "Women — Perfumes", value: "women-perfumes" },
+  { label: "Women — Cufflinks", value: "women-cufflinks" },
+  { label: "Kids — Baby Boys Suits", value: "kids-baby-boys" },
+  { label: "Kids — Baby Girls Suits", value: "kids-baby-girls" },
+];
+
 type ProductFormState = {
   name: string;
   description: string;
   price: string;
   image: string;
+  category: string;
   tags: string;
   inventory: string;
   rating: string;
@@ -29,6 +45,7 @@ const initialProductForm: ProductFormState = {
   description: "",
   price: "0",
   image: "",
+  category: "",
   tags: "",
   inventory: "25",
   rating: "4.5",
@@ -42,6 +59,7 @@ type ProductSummary = {
   priceLabel: string;
   priceValue: number;
   image: string;
+  category: string;
   tags: string[];
   inventory: number;
   featured: boolean;
@@ -101,6 +119,7 @@ export function AdminOverview({ data }: { data: DashboardData }) {
       description: product.description,
       price: product.priceValue.toString(),
       image: product.image,
+      category: product.category ?? "",
       tags: product.tags.join(", "),
       inventory: product.inventory.toString(),
       rating: product.rating.toString(),
@@ -244,6 +263,7 @@ export function AdminOverview({ data }: { data: DashboardData }) {
                     description: productForm.description,
                     price: parseFloat(productForm.price),
                     image: productForm.image,
+                    category: productForm.category,
                     tags,
                     inventory: Number(productForm.inventory),
                     featured: productForm.featured,
@@ -320,6 +340,27 @@ export function AdminOverview({ data }: { data: DashboardData }) {
               </label>
             </div>
             <label className="space-y-1 text-sm font-medium text-zinc-600">
+              Category <span className="text-rose-500">*</span>
+              <select
+                required
+                value={productForm.category}
+                onChange={(event) =>
+                  setProductForm((prev) => ({
+                    ...prev,
+                    category: event.target.value,
+                  }))
+                }
+                className="w-full rounded-2xl border border-zinc-200 px-4 py-3 text-sm text-zinc-900 outline-none transition focus:border-zinc-500"
+              >
+                <option value="" disabled>Select a category…</option>
+                {PRODUCT_CATEGORIES.map((cat) => (
+                  <option key={cat.value} value={cat.value}>
+                    {cat.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="space-y-1 text-sm font-medium text-zinc-600">
               Description
               <textarea
                 required
@@ -340,7 +381,7 @@ export function AdminOverview({ data }: { data: DashboardData }) {
                 <div className="flex flex-col gap-2">
                   <div className="flex gap-2">
                     <input
-                      type="url"
+                      type="text"
                       required
                       value={productForm.image}
                       onChange={(event) =>

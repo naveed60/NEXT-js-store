@@ -39,8 +39,6 @@ const sectionContent = {
 
 type SectionKey = keyof typeof sectionContent;
 
-export const dynamicParams = false;
-
 export function generateStaticParams() {
   return Object.keys(sectionContent).map((section) => ({ section }));
 }

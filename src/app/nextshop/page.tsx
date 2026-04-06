@@ -4,12 +4,13 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function NextShopPage() {
-  const products = await prisma.product.findMany({
-    take: 9,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const products = await (prisma.product.findMany as any)({
     orderBy: { createdAt: "desc" },
   });
 
-  const serializedProducts = products.map((product) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const serializedProducts = products.map((product: any) => ({
     id: product.id,
     name: product.name,
     description: product.description,
@@ -18,6 +19,8 @@ export default async function NextShopPage() {
     tags: product.tags,
     rating: product.rating,
     featured: product.featured,
+    category: product.category ?? "",
+    createdAt: product.createdAt.toISOString(),
   }));
 
   return <LandingScreen products={serializedProducts} />;
