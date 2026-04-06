@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
-import { getServerSession } from "next-auth";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { getServerSession } = require("next-auth") as any;
 import { redirect } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
