@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    useWasmBinary: true,
-  },
   images: {
     remotePatterns: [
       {
@@ -12,11 +9,12 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "www.bopuqilamur.org.uk",
+        hostname: "img.freepik.com",
       },
       {
+        // Vercel Blob uploaded product images
         protocol: "https",
-        hostname: "img.freepik.com",
+        hostname: "*.public.blob.vercel-storage.com",
       },
     ],
   },
