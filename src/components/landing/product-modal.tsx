@@ -10,7 +10,7 @@ import { useFavorites } from "@/components/providers/favorites-provider";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { getValidImageUrl, cn } from "@/lib/utils";
+import { getValidImageUrl, cn, formatPrice } from "@/lib/utils";
 
 const CATEGORY_LABELS: Record<string, string> = {
   "men-un-stitch":   "Men — Un-Stitch",
@@ -164,7 +164,7 @@ export function ProductModal({ product, onClose }: Props) {
 
             {/* Price */}
             <p className="text-3xl font-semibold text-zinc-900">
-              ${product.price.toFixed(2)}
+              {formatPrice(product.price)}
             </p>
 
             {/* Actions */}

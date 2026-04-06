@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, Heart, ShoppingBag, Star } from "lucide-react";
-import { getValidImageUrl } from "@/lib/utils";
+import { getValidImageUrl, formatPrice } from "@/lib/utils";
 
 export function CategoryProductGrid({ products }: { products: StorefrontProduct[] }) {
   const { addItem } = useCart();
@@ -114,7 +114,7 @@ export function CategoryProductGrid({ products }: { products: StorefrontProduct[
               ))}
             </div>
             <div className="mt-auto flex items-center justify-between">
-              <p className="text-2xl font-semibold text-zinc-900">${product.price.toFixed(2)}</p>
+              <p className="text-2xl font-semibold text-zinc-900">{formatPrice(product.price)}</p>
               <Button
                 variant="ghost"
                 className="border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700 hover:border-zinc-400"

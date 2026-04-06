@@ -18,7 +18,7 @@ import { useSession } from "next-auth/react";
 import { useCart } from "@/components/providers/cart-provider";
 import { useFavorites } from "@/components/providers/favorites-provider";
 import { PrimaryHeader } from "./primary-header";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { type StorefrontProduct } from "@/types/product";
 
 type Product = StorefrontProduct & { inventory: number };
@@ -124,7 +124,7 @@ export function ProductDetailClient({ product, related, categoryLabel, validImag
             {/* Price */}
             <div className="flex items-center gap-3">
               <span className="text-3xl font-bold text-zinc-900">
-                ${product.price.toFixed(2)}
+                {formatPrice(product.price)}
               </span>
               {product.featured && (
                 <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-600">
@@ -302,7 +302,7 @@ export function ProductDetailClient({ product, related, categoryLabel, validImag
                 </div>
                 <div className="p-3">
                   <p className="text-sm font-semibold text-zinc-900 line-clamp-1">{p.name}</p>
-                  <p className="mt-0.5 text-sm font-bold text-zinc-700">${p.price.toFixed(2)}</p>
+                  <p className="mt-0.5 text-sm font-bold text-zinc-700">{formatPrice(p.price)}</p>
                 </div>
               </Link>
             ))}

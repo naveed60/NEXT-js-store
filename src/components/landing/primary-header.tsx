@@ -2,16 +2,11 @@
 
 import Link from "next/link";
 import {
-  type LucideIcon,
-  Backpack,
-  HeartPulse,
-  Laptop,
-  Map,
+  ChevronDown,
   Heart,
   Menu,
   Search,
   ShoppingBag,
-  Sparkles,
   User,
   X,
 } from "lucide-react";
@@ -64,39 +59,6 @@ const categoryNavItems: CategoryNavItem[] = [
     ],
   },
 ];
-type SidebarCategory = {
-  label: string;
-  href: string;
-  icon: LucideIcon;
-};
-
-const sidebarCategories: SidebarCategory[] = [
-  {
-    label: "New in studio",
-    href: "/nextshop/categories/new-in-studio",
-    icon: Sparkles,
-  },
-  {
-    label: "Outdoor edits",
-    href: "/nextshop/categories/outdoor-edits",
-    icon: Map,
-  },
-  {
-    label: "Daily carry",
-    href: "/nextshop/categories/daily-carry",
-    icon: Backpack,
-  },
-  {
-    label: "Wellness",
-    href: "/nextshop/categories/wellness",
-    icon: HeartPulse,
-  },
-  {
-    label: "Workspace",
-    href: "/nextshop/categories/workspace",
-    icon: Laptop,
-  },
-];
 
 const LogoMark = () => (
   <span className="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600 via-fuchsia-500 to-orange-500 text-white shadow-xl">
@@ -106,6 +68,7 @@ const LogoMark = () => (
 
 export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [openSidebarCat, setOpenSidebarCat] = useState<string | null>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState<string | null>(null);
   const { items, toggleCart } = useCart();
@@ -133,7 +96,14 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
     <>
       <header className="sticky top-0 z-30 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center gap-4 border border-transparent bg-white/90 px-4 py-4 shadow-lg transition sm:rounded-3xl sm:border-zinc-100">
-         
+          <button
+            type="button"
+            className="sm:hidden rounded-2xl border border-zinc-200 p-2 text-zinc-600 transition hover:border-zinc-400"
+            onClick={() => setSidebarOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
           <Link
             href="/nextshop"
             className="flex items-center gap-3"
@@ -295,7 +265,7 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
         )}
       >
         <div className="flex items-center justify-between">
-          <p className="font-semibold text-zinc-700">Explore studio</p>
+          <p className="font-semibold text-zinc-700">Categories</p>
           <button
             type="button"
             onClick={() => setSidebarOpen(false)}
@@ -305,20 +275,40 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="mt-6 space-y-4 text-sm text-zinc-500">
-            {sidebarCategories.map((category) => (
-              <Link
-                key={category.href}
-                href={category.href}
-                className="group flex items-center gap-3 rounded-2xl border border-transparent px-3 py-3 text-left transition hover:border-zinc-200 hover:text-zinc-800"
-                onClick={() => setSidebarOpen(false)}
+        <div className="mt-6 space-y-1 text-sm">
+          {categoryNavItems.map((cat) => (
+            <div key={cat.label}>
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenSidebarCat(openSidebarCat === cat.label ? null : cat.label)
+                }
+                className="flex w-full items-center justify-between rounded-2xl px-3 py-3 font-semibold tracking-wide text-zinc-700 transition hover:bg-zinc-100"
               >
-                <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-500 transition group-hover:bg-zinc-900 group-hover:text-white">
-                  <category.icon className="h-4 w-4" />
-                </span>
-                <span>{category.label}</span>
-              </Link>
-            ))}
+                {cat.label}
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 text-zinc-400 transition-transform duration-200",
+                    openSidebarCat === cat.label && "rotate-180",
+                  )}
+                />
+              </button>
+              {openSidebarCat === cat.label && (
+                <div className="ml-3 mt-1 space-y-0.5 border-l border-zinc-100 pl-3">
+                  {cat.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setSidebarOpen(false)}
+                      className="block rounded-xl px-3 py-2.5 text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-900"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
         {status === "authenticated" && (
           <div className="mt-8 rounded-2xl border border-zinc-100 p-4 text-sm text-zinc-500">

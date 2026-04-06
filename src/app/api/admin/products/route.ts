@@ -34,7 +34,7 @@ export async function GET() {
     products: products.map((product) => ({
       id: product.id,
       name: product.name,
-      priceLabel: `$${product.price.toNumber().toFixed(2)}`,
+      priceLabel: `PKR ${new Intl.NumberFormat("en-PK").format(Math.round(product.price.toNumber()))}`,
       priceValue: product.price.toNumber(),
       featured: product.featured,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

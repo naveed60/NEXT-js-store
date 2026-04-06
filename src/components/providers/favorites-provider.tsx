@@ -34,15 +34,17 @@ const STORAGE_KEY = "nextshop_favorites";
 
 export function FavoritesProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [favorites, setFavorites] = useState<FavoriteItem[]>(() => {
-    if (typeof window === "undefined") return [];
+  const [favorites, setFavorites] = useState<FavoriteItem[]>([]);
+
+  // Load from localStorage after hydration to avoid server/client mismatch
+  useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? (JSON.parse(stored) as FavoriteItem[]) : [];
+      if (stored) setFavorites(JSON.parse(stored) as FavoriteItem[]);
     } catch {
-      return [];
+      // ignore
     }
-  });
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));

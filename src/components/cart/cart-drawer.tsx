@@ -1,7 +1,7 @@
 "use client";
 
 import { useCart } from "@/components/providers/cart-provider";
-import { cn } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -68,7 +68,7 @@ export function CartDrawer() {
                     </button>
                   </div>
                   <p className="text-sm text-zinc-500">
-                    Qty {item.quantity} · ${(item.price * item.quantity).toFixed(2)}
+                    Qty {item.quantity} · {formatPrice(item.price * item.quantity)}
                   </p>
                 </div>
               </div>
@@ -78,7 +78,7 @@ export function CartDrawer() {
         <div className="border-t border-zinc-100 px-6 py-5">
           <div className="flex items-center justify-between text-base font-semibold text-zinc-900">
             <span>Total</span>
-            <span>${total.toFixed(2)}</span>
+            <span>{formatPrice(total)}</span>
           </div>
           <Button variant="primary" className="mt-4 w-full" disabled={!items.length}>
             Checkout
