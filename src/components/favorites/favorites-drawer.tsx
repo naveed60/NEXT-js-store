@@ -1,7 +1,7 @@
 "use client";
 
 import { useFavorites } from "@/components/providers/favorites-provider";
-import { cn, getValidImageUrl } from "@/lib/utils";
+import { cn, getValidImageUrl, formatPrice } from "@/lib/utils";
 import { Heart, X } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -81,7 +81,7 @@ export function FavoritesDrawer() {
                     </button>
                   </div>
                   <p className="text-sm font-semibold text-zinc-700">
-                    ${item.price.toFixed(2)}
+                    {formatPrice(item.price)}
                   </p>
                 </div>
               </div>
