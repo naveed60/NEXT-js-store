@@ -7,6 +7,7 @@ import {
   HeartPulse,
   Laptop,
   Map,
+  Heart,
   Menu,
   Search,
   ShoppingBag,
@@ -17,6 +18,7 @@ import {
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/providers/cart-provider";
+import { useFavorites } from "@/components/providers/favorites-provider";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -26,10 +28,41 @@ type HeaderProps = {
   onSearchChange: (value: string) => void;
 };
 
-const navLinks = [
-  { label: "Collections", href: "/nextshop/collections" },
-  { label: "Essentials", href: "/nextshop/essentials" },
-  { label: "Stories", href: "/nextshop/stories" },
+const navLinks: { label: string; href: string }[] = [];
+
+type CategoryNavItem = {
+  label: string;
+  items: { label: string; href: string }[];
+};
+
+const categoryNavItems: CategoryNavItem[] = [
+  {
+    label: "MEN",
+    items: [
+      { label: "Un-Stitch", href: "/nextshop/men/un-stitch" },
+      { label: "Stitch", href: "/nextshop/men/stitch" },
+      { label: "Watch Collection", href: "/nextshop/men/watches" },
+      { label: "Perfume Collection", href: "/nextshop/men/perfumes" },
+      { label: "Cufflinks", href: "/nextshop/men/cufflinks" },
+    ],
+  },
+  {
+    label: "WOMEN",
+    items: [
+      { label: "Un-Stitch", href: "/nextshop/women/un-stitch" },
+      { label: "Stitch", href: "/nextshop/women/stitch" },
+      { label: "Watch Collection", href: "/nextshop/women/watches" },
+      { label: "Perfume Collection", href: "/nextshop/women/perfumes" },
+      { label: "Cufflinks", href: "/nextshop/women/cufflinks" },
+    ],
+  },
+  {
+    label: "KIDS",
+    items: [
+      { label: "Baby Boys Suits", href: "/nextshop/kids/baby-boys-suits" },
+      { label: "Baby Girls Suits", href: "/nextshop/kids/baby-girls-suits" },
+    ],
+  },
 ];
 type SidebarCategory = {
   label: string;
@@ -74,7 +107,9 @@ const LogoMark = () => (
 export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
   const { items, toggleCart } = useCart();
+  const { favorites, toggleDrawer: toggleFavorites } = useFavorites();
   const { status, data: session } = useSession();
   const [signingOut, setSigningOut] = useState(false);
   const router = useRouter();
@@ -98,23 +133,13 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
     <>
       <header className="sticky top-0 z-30 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center gap-4 border border-transparent bg-white/90 px-4 py-4 shadow-lg transition sm:rounded-3xl sm:border-zinc-100">
-          <button
-            type="button"
-            className="rounded-2xl border border-zinc-200 p-2 text-zinc-600 transition hover:border-zinc-400"
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+         
           <Link
             href="/nextshop"
             className="flex items-center gap-3"
             aria-label="Go to NextShop home"
           >
             <LogoMark />
-            <span className="hidden text-sm font-semibold uppercase tracking-[0.4em] text-zinc-500 sm:inline">
-              NextShop
-            </span>
           </Link>
           <nav className="hidden flex-1 items-center justify-center gap-6 text-sm text-zinc-400 sm:flex">
             {navLinks.map((link) => (
@@ -125,6 +150,37 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
               >
                 {link.label}
               </Link>
+            ))}
+            {categoryNavItems.map((cat) => (
+              <div
+                key={cat.label}
+                className="relative pb-2"
+                onMouseEnter={() => setOpenCategory(cat.label)}
+                onMouseLeave={() => setOpenCategory(null)}
+              >
+                <button
+                  type="button"
+                  className="flex items-center gap-1 font-semibold tracking-wide text-zinc-700 transition hover:text-zinc-900"
+                >
+                  {cat.label}
+                  <svg className="h-3 w-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {openCategory === cat.label && (
+                  <div className="absolute left-0 top-full z-50 w-52 rounded-2xl border border-zinc-100 bg-white py-2 shadow-xl">
+                    {cat.items.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="block px-4 py-2.5 text-sm text-zinc-600 transition hover:bg-zinc-50 hover:text-zinc-900"
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </nav>
           <div className="relative hidden flex-1 items-center rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm shadow-inner sm:flex">
@@ -137,6 +193,19 @@ export function PrimaryHeader({ searchTerm, onSearchChange }: HeaderProps) {
             />
           </div>
           <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleFavorites}
+              className="relative rounded-full border border-zinc-200 p-2 text-zinc-600 transition hover:border-zinc-400"
+              aria-label="Favorites"
+            >
+              <Heart className={`h-5 w-5 transition ${favorites.length > 0 ? "fill-rose-500 text-rose-500" : ""}`} />
+              {favorites.length > 0 && (
+                <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-rose-500 px-1 text-[11px] font-semibold text-white">
+                  {favorites.length}
+                </span>
+              )}
+            </button>
             <button
               type="button"
               onClick={toggleCart}

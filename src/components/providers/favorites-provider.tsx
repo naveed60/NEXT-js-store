@@ -1,0 +1,99 @@
+"use client";
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import type { StorefrontProduct } from "@/types/product";
+
+type FavoriteItem = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+};
+
+type FavoritesContextValue = {
+  favorites: FavoriteItem[];
+  isOpen: boolean;
+  isFavorite: (id: string) => boolean;
+  toggleFavorite: (product: StorefrontProduct) => void;
+  removeFavorite: (id: string) => void;
+  toggleDrawer: () => void;
+  closeDrawer: () => void;
+};
+
+const FavoritesContext = createContext<FavoritesContextValue | undefined>(
+  undefined,
+);
+
+const STORAGE_KEY = "nextshop_favorites";
+
+export function FavoritesProvider({ children }: { children: React.ReactNode }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [favorites, setFavorites] = useState<FavoriteItem[]>(() => {
+    if (typeof window === "undefined") return [];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? (JSON.parse(stored) as FavoriteItem[]) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
+  }, [favorites]);
+
+  const isFavorite = (id: string) => favorites.some((f) => f.id === id);
+
+  const toggleFavorite = (product: StorefrontProduct) => {
+    setFavorites((prev) => {
+      if (prev.some((f) => f.id === product.id)) {
+        return prev.filter((f) => f.id !== product.id);
+      }
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+        },
+      ];
+    });
+  };
+
+  const removeFavorite = (id: string) =>
+    setFavorites((prev) => prev.filter((f) => f.id !== id));
+
+  const value = useMemo(
+    () => ({
+      favorites,
+      isOpen,
+      isFavorite,
+      toggleFavorite,
+      removeFavorite,
+      toggleDrawer: () => setIsOpen((prev) => !prev),
+      closeDrawer: () => setIsOpen(false),
+    }),
+    [favorites, isOpen],
+  );
+
+  return (
+    <FavoritesContext.Provider value={value}>
+      {children}
+    </FavoritesContext.Provider>
+  );
+}
+
+export const useFavorites = () => {
+  const ctx = useContext(FavoritesContext);
+  if (!ctx) {
+    throw new Error("useFavorites must be used inside FavoritesProvider");
+  }
+  return ctx;
+};

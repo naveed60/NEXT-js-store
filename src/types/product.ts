@@ -7,4 +7,6 @@ export type StorefrontProduct = {
   tags: string[];
   rating: number;
   featured: boolean;
+  category: string;
+  createdAt: string;
 };
