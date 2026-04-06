@@ -5,7 +5,8 @@ import { featuredProducts } from "@/data/products";
 const prisma = new PrismaClient();
 
 async function main() {
-  const password = await bcrypt.hash("admin123", 10);
+  const rawPassword = process.env.SEED_ADMIN_PASSWORD ?? "admin123";
+  const password = await bcrypt.hash(rawPassword, 10);
 
   const admin = await prisma.user.upsert({
     where: { email: "admin@nextshop.dev" },

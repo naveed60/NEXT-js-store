@@ -1,14 +1,12 @@
-import { Buffer } from "buffer";
-import { promises as fs } from "fs";
-import path from "path";
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const { getServerSession } = require("next-auth") as any;
 import { NextResponse } from "next/server";
+import { put } from "@vercel/blob";
 
 import { authOptions } from "@/lib/auth";
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 const sanitizeFileName = (input: string) =>
   input.replace(/[^\w.-]/g, "_").slice(0, 64) || `upload-${Date.now()}`;
@@ -28,21 +26,20 @@ export async function POST(request: Request) {
   }
 
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-    return NextResponse.json(
-      { message: "Unsupported image type" },
-      { status: 400 },
-    );
+    return NextResponse.json({ message: "Unsupported image type. Use JPEG, PNG, WebP or GIF." }, { status: 400 });
   }
 
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  const fileName = `${Date.now()}-${sanitizeFileName(
-    (file as File).name ?? "upload",
-  )}`;
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
+  if (file.size > MAX_FILE_SIZE_BYTES) {
+    return NextResponse.json({ message: "File too large. Maximum size is 5 MB." }, { status: 413 });
+  }
 
-  await fs.mkdir(uploadDir, { recursive: true });
-  await fs.writeFile(path.join(uploadDir, fileName), buffer);
+  try {
+    const fileName = `products/${Date.now()}-${sanitizeFileName((file as File).name ?? "upload")}`;
+    const blob = await put(fileName, file, { access: "public" });
 
-  return NextResponse.json({ url: `/uploads/${fileName}` }, { status: 201 });
+    return NextResponse.json({ url: blob.url }, { status: 201 });
+  } catch (error) {
+    console.error("[upload]", error);
+    return NextResponse.json({ message: "Upload failed" }, { status: 500 });
+  }
 }
