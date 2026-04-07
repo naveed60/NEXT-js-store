@@ -19,7 +19,7 @@ NextShop is a modern ecommerce starter built with **Next.js 16 (App Router)**, *
 2. **Configure environment variables**
    ```bash
    cp .env.example .env
-   # Update DATABASE_URL, AUTH_SECRET, NEXTAUTH_URL
+   # Update DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL
    ```
 3. **Provision the database**
    ```bash

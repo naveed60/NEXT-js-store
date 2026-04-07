@@ -10,6 +10,8 @@ const credentialsSchema = z.object({
   password: z.string().min(6),
 });
 
+const authSecret = process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET;
+
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   session: {
@@ -73,7 +75,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-  secret: process.env.AUTH_SECRET,
+  secret: authSecret,
 };
 
 export type ExtendedUser = {
