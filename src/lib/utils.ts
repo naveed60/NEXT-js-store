@@ -10,6 +10,19 @@ const allowedImageHosts = new Set([
   "img.freepik.com",
 ]);
 
+const allowedImageHostSuffixes = [".public.blob.vercel-storage.com"];
+
+function isAllowedImageHost(hostname: string): boolean {
+  if (allowedImageHosts.has(hostname)) {
+    return true;
+  }
+
+  return allowedImageHostSuffixes.some(
+    (suffix) =>
+      hostname === suffix.slice(1) || hostname.endsWith(suffix),
+  );
+}
+
 export function formatPrice(amount: number): string {
   return "PKR " + new Intl.NumberFormat("en-PK").format(Math.round(amount));
 }
@@ -19,7 +32,7 @@ export function getValidImageUrl(src: string): string | null {
   if (src.startsWith("/")) return src;
   try {
     const url = new URL(src);
-    return allowedImageHosts.has(url.hostname) ? src : null;
+    return isAllowedImageHost(url.hostname) ? src : null;
   } catch {
     return null;
   }
