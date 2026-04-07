@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
       {
         // Vercel Blob uploaded product images
         protocol: "https",
-        hostname: "*.public.blob.vercel-storage.com",
+        hostname: "**.public.blob.vercel-storage.com",
       },
     ],
   },
