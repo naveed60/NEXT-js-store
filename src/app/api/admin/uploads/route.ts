@@ -35,7 +35,7 @@ export async function POST(request: Request) {
 
   try {
     const fileName = `products/${Date.now()}-${sanitizeFileName((file as File).name ?? "upload")}`;
-    const blob = await put(fileName, file, { access: "private" });
+    const blob = await put(fileName, file, { access: "public" });
 
     return NextResponse.json({ url: blob.url }, { status: 201 });
   } catch (error) {
