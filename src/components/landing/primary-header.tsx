@@ -81,7 +81,7 @@ export function PrimaryHeader({
       ).slice(0, 12),
     [searchSuggestions]
   );
-  const { items, toggleCart } = useCart();
+  const { itemCount, toggleCart } = useCart();
   const { favorites, toggleDrawer: toggleFavorites } = useFavorites();
   const { status, data: session } = useSession();
   const [signingOut, setSigningOut] = useState(false);
@@ -197,9 +197,9 @@ export function PrimaryHeader({
               aria-label="Open cart"
             >
               <ShoppingBag className="h-5 w-5" />
-              {items.length > 0 && (
+              {itemCount > 0 && (
                 <span className="absolute -right-1 -top-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-[oklch(0.58_0.15_256.18)] px-1 text-[11px] font-semibold text-white">
-                  {items.length}
+                  {itemCount}
                 </span>
               )}
             </button>
