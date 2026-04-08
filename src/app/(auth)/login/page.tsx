@@ -5,6 +5,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { PyramidLoader } from "@/components/ui/pyramid-loader";
 import { toast } from "sonner";
 
 function LoginPageContent() {
@@ -89,7 +90,14 @@ function LoginPageContent() {
                 onClick={handleSignOut}
                 disabled={signingOut}
               >
-                {signingOut ? "Signing out..." : "Switch account"}
+                {signingOut ? (
+                  <span className="inline-flex items-center gap-2">
+                    <PyramidLoader size="xs" />
+                    Signing out...
+                  </span>
+                ) : (
+                  "Switch account"
+                )}
               </Button>
             </div>
           </div>
@@ -122,7 +130,14 @@ function LoginPageContent() {
           />
         </label>
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? (
+            <span className="inline-flex items-center gap-2">
+              <PyramidLoader size="xs" />
+              Signing in...
+            </span>
+          ) : (
+            "Sign in"
+          )}
         </Button>
         <p className="text-sm text-zinc-600">
           New to NextShop?{" "}
@@ -143,9 +158,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-zinc-50 via-white to-zinc-100 px-4">
-          <div className="w-full max-w-md rounded-3xl border border-zinc-100 bg-white p-8 text-center text-sm text-zinc-500 shadow-2xl">
-            Loading...
-          </div>
+          <PyramidLoader size="lg" label="Loading..." />
         </div>
       }
     >

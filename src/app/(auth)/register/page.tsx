@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { PyramidLoader } from "@/components/ui/pyramid-loader";
 import { toast } from "sonner";
 
 export default function RegisterPage() {
@@ -97,7 +98,14 @@ export default function RegisterPage() {
           <p className="text-sm font-semibold text-red-500">{error}</p>
         )}
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Creating account..." : "Create account"}
+          {loading ? (
+            <span className="inline-flex items-center gap-2">
+              <PyramidLoader size="xs" />
+              Creating account...
+            </span>
+          ) : (
+            "Create account"
+          )}
         </Button>
         <p className="text-sm text-zinc-600">
           Already have an account?{" "}
