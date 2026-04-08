@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,6 +37,15 @@ export function ProductDetailClient({ product, related, categoryLabel, validImag
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [zoomed, setZoomed] = useState(false);
+  const searchSuggestions = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          [product, ...related].flatMap((item) => [item.name, ...item.tags])
+        )
+      ).slice(0, 12),
+    [product, related]
+  );
 
   const favorited = isFavorite(product.id);
   const inStock = product.inventory > 0;
@@ -53,7 +62,11 @@ export function ProductDetailClient({ product, related, categoryLabel, validImag
 
   return (
     <>
-      <PrimaryHeader searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <PrimaryHeader
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchSuggestions={searchSuggestions}
+      />
 
       {/* Breadcrumb */}
       <nav className="mt-6 flex items-center gap-2 text-xs text-zinc-400">
