@@ -140,10 +140,10 @@ export function StorefrontProductCard({
         </div>
 
         <div className="mt-auto">
-          <p className="text-xl text-zinc-400 line-through">{formatCardPrice(comparePrice)}</p>
+          <p className=" text-zinc-400 line-through">{formatCardPrice(comparePrice)}</p>
 
           <div className="mt-2 flex items-end justify-between gap-4">
-            <p className="text-[2.1rem] font-semibold leading-none tracking-[-0.05em] text-zinc-950">
+            <p className="text-[1.25rem] font-semibold leading-none tracking-[-0.05em] text-zinc-950">
               {formatCardPrice(product.price)}
             </p>
             <Button

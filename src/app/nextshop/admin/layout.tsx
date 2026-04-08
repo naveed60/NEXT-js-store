@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const { getServerSession } = require("next-auth") as any;
+import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
 import { authOptions } from "@/lib/auth";
@@ -20,5 +19,15 @@ export default async function AdminLayout({
     redirect("/login");
   }
 
-  return <AdminShell>{children}</AdminShell>;
+  return (
+    <AdminShell
+      user={{
+        name: session.user?.name ?? null,
+        email: session.user?.email ?? null,
+        role: session.user?.role ?? "ADMIN",
+      }}
+    >
+      {children}
+    </AdminShell>
+  );
 }
