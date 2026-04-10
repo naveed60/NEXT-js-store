@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import { Footer } from "@/components/landing/footer";
 import { PrimaryHeader } from "@/components/landing/primary-header";
+import "./auth.css";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -16,7 +17,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
           onSearchSubmit={setSearchTerm}
           searchSuggestions={[]}
         />
-        <div className="mt-6">{children}</div>
+        <div className="mt-10 md:mt-12">{children}</div>
         <Footer />
       </div>
     </div>

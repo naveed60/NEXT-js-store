@@ -16,7 +16,7 @@ import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/providers/cart-provider";
 import { useFavorites } from "@/components/providers/favorites-provider";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -86,6 +86,11 @@ export function PrimaryHeader({
   const { status, data: session } = useSession();
   const [signingOut, setSigningOut] = useState(false);
   const router = useRouter();
+
+  const handleSignIn = () => {
+    const redirectPath = `${window.location.pathname}${window.location.search}`;
+    router.push(`/login?redirect=${encodeURIComponent(redirectPath)}`);
+  };
 
   const handleSignOut = async () => {
     try {
@@ -244,7 +249,7 @@ export function PrimaryHeader({
             ) : (
               <button
                 type="button"
-                onClick={() => signIn()}
+                onClick={handleSignIn}
                 className="hidden rounded-full border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:border-zinc-400 sm:block"
               >
                 Sign in
@@ -364,7 +369,7 @@ export function PrimaryHeader({
         {status !== "authenticated" && (
           <button
             type="button"
-            onClick={() => signIn()}
+            onClick={handleSignIn}
             className="mt-8 w-full rounded-2xl border border-zinc-200 px-4 py-3 text-sm font-semibold text-zinc-700 transition hover:border-zinc-400 hover:bg-zinc-50 sm:hidden"
           >
             Sign in
